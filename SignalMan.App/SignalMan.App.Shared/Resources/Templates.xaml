@@ -1,0 +1,14 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SignalMan.App">
+	<DataTemplate x:Key="HubTemplate">
+		<Grid Margin="-100,0" Width="6000">
+			<Grid.Background>
+				<SolidColorBrush Color="{StaticResource PrimaryColor}"/>
+			</Grid.Background>
+			<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding}" VerticalAlignment="Top" Margin="100,0,0,0" FontFamily="Segoe UI Semibold" Foreground="White"/>
+		</Grid>
+	</DataTemplate>
+    
+</ResourceDictionary>
