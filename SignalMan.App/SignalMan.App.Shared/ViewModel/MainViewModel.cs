@@ -1,34 +1,102 @@
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using SignalMan.SignalR;
+using System;
 
 namespace SignalMan.App.ViewModel
 {
-    /// <summary>
-    /// This class contains properties that the main View can data bind to.
-    /// <para>
-    /// Use the <strong>mvvminpc</strong> snippet to add bindable properties to this ViewModel.
-    /// </para>
-    /// <para>
-    /// You can also use Blend to data bind with the tool's support.
-    /// </para>
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
-    /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
-        /// </summary>
+        #region Fields
+        private SignalRHelper signalRHelper;
+        #endregion
+        #region Properties
+        private RelayCommand connect;
+
+        public RelayCommand Connect
+        {
+            get { return connect; }
+            set { connect = value; RaisePropertyChanged(); }
+        }
+
+        private RelayCommand<string> move;
+
+        public RelayCommand<string> Move
+        {
+            get { return move; }
+            set { move = value; RaisePropertyChanged(); }
+        }
+
+        private string connectionId;
+
+        public string ConnectionId
+        {
+            get { return connectionId; }
+            set { connectionId = value; RaisePropertyChanged(); }
+        }
+
+        private int steps;
+
+        public int Steps
+        {
+            get { return steps; }
+            set { steps = value; RaisePropertyChanged(); }
+        }
+
+        private int points;
+
+        public int Points
+        {
+            get { return points; }
+            set { points = value; RaisePropertyChanged(); }
+        }
+
+        #endregion
+
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
+            Connect = new RelayCommand(connectAction);
+            Move = new RelayCommand<string>(moveAction);
+            Points = 0;
+            Steps = 0;
+            signalRHelper = new SignalRHelper();
         }
+
+        #region Commands
+        private void connectAction()
+        {
+            if(signalRHelper.Connected)
+            {
+                signalRHelper.Dispose();
+            }
+
+            signalRHelper.Initialize(ConnectionId);
+            signalRHelper.Connect();
+            signalRHelper.PointsChanged += OnPointsChanged;
+            signalRHelper.StepsChanged += OnStepsChanged;
+
+        }
+
+        private void moveAction(string direction)
+        {
+            if (signalRHelper.Connected)
+            {
+                signalRHelper.MovePlayer(direction);
+            }
+        }
+        #endregion
+
+        #region Update Properties
+        private void OnPointsChanged(object sender, int e)
+        {
+            Points = e;
+        }
+
+        private void OnStepsChanged(object sender, int e)
+        {
+            Steps = e;
+        }
+        #endregion
+
     }
 }
