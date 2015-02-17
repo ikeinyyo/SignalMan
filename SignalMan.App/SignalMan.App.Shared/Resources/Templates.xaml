@@ -3,11 +3,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SignalMan.App" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
 	<DataTemplate x:Key="HubTemplate">
-		<Grid Margin="-100,0" Width="6000">
+		<Grid Margin="-500,0,-100,0" Width="6000">
 			<Grid.Background>
 				<SolidColorBrush Color="{StaticResource PrimaryColor}"/>
 			</Grid.Background>
-			<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding}" VerticalAlignment="Top" Margin="100,0,0,0" FontFamily="Segoe UI Semibold" Foreground="White"/>
+			<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding}" VerticalAlignment="Top" Margin="500,0,0,0" FontFamily="Segoe UI Semibold" Foreground="White"/>
 		</Grid>
 	</DataTemplate>
 	<ControlTemplate x:Key="ArrowButtonTemplate" TargetType="Button">

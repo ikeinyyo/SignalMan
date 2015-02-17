@@ -51,6 +51,13 @@ namespace SignalMan.App.ViewModel
             set { points = value; RaisePropertyChanged(); }
         }
 
+        private bool connected;
+
+        public bool Connected
+        {
+            get { return connected; }
+            set { connected = value; RaisePropertyChanged(); }
+        }
         #endregion
 
         public MainViewModel()
@@ -60,6 +67,7 @@ namespace SignalMan.App.ViewModel
             Points = 0;
             Steps = 0;
             signalRHelper = new SignalRHelper();
+            Connected = false;
         }
 
         #region Commands
@@ -68,13 +76,14 @@ namespace SignalMan.App.ViewModel
             if(signalRHelper.Connected)
             {
                 signalRHelper.Dispose();
+                Connected = signalRHelper.Connected;
             }
 
             signalRHelper.Initialize(ConnectionId);
             signalRHelper.Connect();
             signalRHelper.PointsChanged += OnPointsChanged;
             signalRHelper.StepsChanged += OnStepsChanged;
-
+            Connected = signalRHelper.Connected;
         }
 
         private void moveAction(string direction)
