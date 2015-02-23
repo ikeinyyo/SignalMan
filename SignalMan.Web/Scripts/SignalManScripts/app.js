@@ -1,9 +1,9 @@
-﻿
-var Player = (function () {
-    var sprites = ["man_yellow", "man_red"];
+﻿var Player = (function () {
+    var sprites = ["man1", "man2", "man3", "man4", "man5", "man6", "man7", "man8", "man9", "man10", "man11", "man12", "man13", "man14", "man15", "man16"];
 
-    var Player = function (id) {
+    var Player = function (id, name) {
         this.id = id;
+        this.name = name;
         this.position = {
             x: 1,
             y: 1,
@@ -45,11 +45,16 @@ var Player = (function () {
 
         this.createSprite = function () {
             var img = new Image();
-            img.src = '/tiles/' + sprites.pop() + '.png';
+            img.src = 'tiles/' + sprites.pop() + '.png';
             return img;
         }
 
         this.sprite = this.createSprite();
+
+        this.toDOM = function () {
+            return "<li><img width='20' src='" + this.sprite.src + "'/> " + this.name + ": " + this.cocos + "</li>";
+        }
+
     };
     return Player;
 })();
@@ -86,7 +91,7 @@ var World = {
     canvas: document.getElementById("canvas").getContext("2d"),
     addSprite: function (name) {
         var img = new Image();
-        img.src = '/tiles/' + name + '.png';
+        img.src = 'tiles/' + name + '.png';
         this.sprites[name] = img;
     },
     read: function (position) {
@@ -126,6 +131,9 @@ var World = {
 
         var posX = posY = 0;
 
+        var wall_tile = new Image();
+        wall_tile.src = 'tiles/wall.png';
+
         for (var i = 0; i < this.map.length; i++) {
             for (var j = 0; j < this.map[i].length; j++) {
                 var current;
@@ -150,11 +158,17 @@ var World = {
             posX = 0;
         };
 
+        var list = $("#list");
+        list.html("");
         for (var key in this.players) {
             var player = this.players[key];
             console.log(player);
             context.drawImage(player.sprite, player.getX() * TAM_TILE, player.getY() * TAM_TILE, TAM_TILE, TAM_TILE);
+            list.append(player.toDOM());
         };
+
+        $("#dots").html(this.remaining);
+
     },
     init: function () {
 
@@ -162,8 +176,8 @@ var World = {
         this.addSprite("empty");
         this.addSprite("wall");
 
-        this.addPlayer(new Player("a"));
-        this.addPlayer(new Player("g"));
+        this.addPlayer(new Player("a", "alex"));
+        this.addPlayer(new Player("g", "gallardo"));
 
         setTimeout(function () { this.draw() }.bind(this), 500);
 
