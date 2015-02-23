@@ -13,7 +13,7 @@ body {
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
-    height: 100%;
+    height: 780px;
     width: 100%;
     margin-top: -20px;
     
@@ -39,6 +39,34 @@ textarea {
     background-color: #EEE;
    
 }
+
+#canvas{
+    float:left;
+    border:1px solid #d3d3d3;
+}
+
+
+#data{
+    font-size: 14px;
+    float:left;
+    margin-left: 10px;
+    
+}
+
+#data p{
+    font-size: 16px;
+    font-weight: 800;
+}
+
+li{
+    list-style-type: none;
+    margin-bottom:5px;
+}
+ul{
+    padding: 0px;
+    margin-left: 20px;
+}
+
 
 
 /* Canvas Board */
