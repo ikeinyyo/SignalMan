@@ -18,7 +18,7 @@ namespace SignalMan.App.ViewModel
             get { return connect; }
             set { connect = value; RaisePropertyChanged(); }
         }
-
+        
         private RelayCommand<string> move;
 
         public RelayCommand<string> Move
@@ -73,17 +73,37 @@ namespace SignalMan.App.ViewModel
         #region Commands
         private void connectAction()
         {
-            if(signalRHelper.Connected)
-            {
-                signalRHelper.Dispose();
-                Connected = signalRHelper.Connected;
-            }
+            // Clear last connection
+            disconnect();
 
+            // Attach to closing app
+            App.Current.Suspending += OnAppSuspending;
+
+            // Connect
             signalRHelper.Initialize(ConnectionId);
             signalRHelper.Connect();
             signalRHelper.PointsChanged += OnPointsChanged;
             signalRHelper.StepsChanged += OnStepsChanged;
             Connected = signalRHelper.Connected;
+        }
+
+        void OnAppSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
+        {
+            var deferral = e.SuspendingOperation.GetDeferral();
+
+            disconnect();
+            
+            deferral.Complete();
+        }
+
+        private void disconnect()
+        {
+            App.Current.Suspending -= OnAppSuspending;
+            if (signalRHelper.Connected)
+            {
+                signalRHelper.Dispose();
+                Connected = signalRHelper.Connected;
+            }
         }
 
         private void moveAction(string direction)
