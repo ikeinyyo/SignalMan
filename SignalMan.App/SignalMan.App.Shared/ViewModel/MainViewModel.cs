@@ -88,8 +88,6 @@ namespace SignalMan.App.ViewModel
 
             // Attach to closing app
             App.Current.Suspending += OnAppSuspending;
-            MessageDialog errorDialog = new MessageDialog(connectionError);
-            var taks = errorDialog.ShowAsync();
             try
             {
                 // Connect
