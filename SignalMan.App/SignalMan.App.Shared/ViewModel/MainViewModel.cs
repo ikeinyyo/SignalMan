@@ -2,14 +2,22 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using SignalMan.SignalR;
 using System;
+using Windows.UI.Popups;
 
 namespace SignalMan.App.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        #region Const
+        private const string errorTitle = "SignalMan Error";
+        private const string connectionError = "Error to connect to Game Server";
+        private const string actionError = "Error to execute action. Are you connected to Game Server?";
+        #endregion
+
         #region Fields
         private SignalRHelper signalRHelper;
         #endregion
+
         #region Properties
         private RelayCommand connect;
 
@@ -18,7 +26,7 @@ namespace SignalMan.App.ViewModel
             get { return connect; }
             set { connect = value; RaisePropertyChanged(); }
         }
-        
+
         private RelayCommand<string> move;
 
         public RelayCommand<string> Move
@@ -60,6 +68,7 @@ namespace SignalMan.App.ViewModel
         }
         #endregion
 
+        #region Initialize Methods
         public MainViewModel()
         {
             Connect = new RelayCommand(connectAction);
@@ -69,6 +78,7 @@ namespace SignalMan.App.ViewModel
             signalRHelper = new SignalRHelper();
             Connected = false;
         }
+        #endregion
 
         #region Commands
         private void connectAction()
@@ -78,23 +88,25 @@ namespace SignalMan.App.ViewModel
 
             // Attach to closing app
             App.Current.Suspending += OnAppSuspending;
+            MessageDialog errorDialog = new MessageDialog(connectionError);
+            var taks = errorDialog.ShowAsync();
+            try
+            {
+                // Connect
+                signalRHelper.Initialize(ConnectionId);
+                signalRHelper.Connect();
+                signalRHelper.PointsChanged += OnPointsChanged;
+                signalRHelper.StepsChanged += OnStepsChanged;
+                Connected = signalRHelper.Connected;
+            }
+            catch
+            {
+                showError(connectionError);
+            }
 
-            // Connect
-            signalRHelper.Initialize(ConnectionId);
-            signalRHelper.Connect();
-            signalRHelper.PointsChanged += OnPointsChanged;
-            signalRHelper.StepsChanged += OnStepsChanged;
-            Connected = signalRHelper.Connected;
         }
 
-        void OnAppSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
-        {
-            var deferral = e.SuspendingOperation.GetDeferral();
-
-            disconnect();
-            
-            deferral.Complete();
-        }
+      
 
         private void disconnect()
         {
@@ -110,7 +122,18 @@ namespace SignalMan.App.ViewModel
         {
             if (signalRHelper.Connected)
             {
-                signalRHelper.MovePlayer(direction);
+                try
+                {
+                    signalRHelper.MovePlayer(direction);
+                }
+                catch
+                {
+                    showError(actionError);
+                }
+            }
+            else
+            {
+                showError(actionError);
             }
         }
         #endregion
@@ -124,6 +147,26 @@ namespace SignalMan.App.ViewModel
         private void OnStepsChanged(object sender, int e)
         {
             Steps = e;
+        }
+        #endregion
+
+        #region Events
+        void OnAppSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
+        {
+            var deferral = e.SuspendingOperation.GetDeferral();
+
+            disconnect();
+
+            deferral.Complete();
+        }
+        #endregion
+
+        #region Private Methods
+        private void showError(string errorMessage)
+        {
+            MessageDialog errorDialog = new MessageDialog(errorMessage);
+            errorDialog.Title = errorTitle;
+            var taks = errorDialog.ShowAsync();
         }
         #endregion
 
