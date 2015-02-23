@@ -27,6 +27,14 @@ namespace SignalMan.App.ViewModel
             set { connect = value; RaisePropertyChanged(); }
         }
 
+        private RelayCommand disconnect;
+
+        public RelayCommand Disconnect
+        {
+            get { return disconnect; }
+            set { disconnect = value; RaisePropertyChanged(); }
+        }
+
         private RelayCommand<string> move;
 
         public RelayCommand<string> Move
@@ -43,12 +51,20 @@ namespace SignalMan.App.ViewModel
             set { connectionId = value; RaisePropertyChanged(); }
         }
 
-        private int steps;
+        private string gameTag;
 
-        public int Steps
+        public string GameTag
         {
-            get { return steps; }
-            set { steps = value; RaisePropertyChanged(); }
+            get { return gameTag; }
+            set { gameTag = value; RaisePropertyChanged(); }
+        }
+
+        private int totalDots;
+
+        public int TotalDots
+        {
+            get { return totalDots; }
+            set { totalDots = value; RaisePropertyChanged(); }
         }
 
         private int points;
@@ -72,9 +88,10 @@ namespace SignalMan.App.ViewModel
         public MainViewModel()
         {
             Connect = new RelayCommand(connectAction);
+            Disconnect = new RelayCommand(disconnectAction);
             Move = new RelayCommand<string>(moveAction);
             Points = 0;
-            Steps = 0;
+            TotalDots = 0;
             signalRHelper = new SignalRHelper();
             Connected = false;
         }
@@ -84,7 +101,7 @@ namespace SignalMan.App.ViewModel
         private void connectAction()
         {
             // Clear last connection
-            disconnect();
+            clearConnection();
 
             // Attach to closing app
             App.Current.Suspending += OnAppSuspending;
@@ -94,7 +111,7 @@ namespace SignalMan.App.ViewModel
                 signalRHelper.Initialize(ConnectionId);
                 signalRHelper.Connect();
                 signalRHelper.PointsChanged += OnPointsChanged;
-                signalRHelper.StepsChanged += OnStepsChanged;
+                signalRHelper.TotalDotsChanged += OnTotalDotsChanged;
                 Connected = signalRHelper.Connected;
             }
             catch
@@ -103,14 +120,19 @@ namespace SignalMan.App.ViewModel
             }
 
         }
+        private void disconnectAction()
+        {
+            // Clear last connection
+            clearConnection();
+        }
 
-      
-
-        private void disconnect()
+        private void clearConnection()
         {
             App.Current.Suspending -= OnAppSuspending;
             if (signalRHelper.Connected)
             {
+                signalRHelper.PointsChanged -= OnPointsChanged;
+                signalRHelper.TotalDotsChanged -= OnTotalDotsChanged;
                 signalRHelper.Dispose();
                 Connected = signalRHelper.Connected;
             }
@@ -142,9 +164,9 @@ namespace SignalMan.App.ViewModel
             Points = e;
         }
 
-        private void OnStepsChanged(object sender, int e)
+        private void OnTotalDotsChanged(object sender, int e)
         {
-            Steps = e;
+            TotalDots = e;
         }
         #endregion
 
@@ -153,7 +175,7 @@ namespace SignalMan.App.ViewModel
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 
-            disconnect();
+            clearConnection();
 
             deferral.Complete();
         }

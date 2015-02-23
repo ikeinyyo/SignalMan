@@ -7,7 +7,7 @@
 			<Grid.Background>
 				<SolidColorBrush Color="{StaticResource PrimaryColor}"/>
 			</Grid.Background>
-			<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding}" VerticalAlignment="Top" Margin="500,0,0,0" FontFamily="Segoe UI Semibold" Foreground="White"/>
+			<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding}" VerticalAlignment="Top" Margin="500,25,0,10" FontFamily="Segoe UI Semibold" Foreground="White"/>
 		</Grid>
 	</DataTemplate>
 	<ControlTemplate x:Key="ArrowButtonTemplate" TargetType="Button">

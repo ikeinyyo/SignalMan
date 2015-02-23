@@ -16,12 +16,12 @@ namespace SignalMan.SignalR
         /// <summary>
         /// Steps in game.
         /// </summary>
-        private int steps;
+        private int totalDots;
 
-        public int Steps
+        public int TotalDots
         {
-            get { return steps; }
-            private set { steps = value; OnStepsChanged(); }
+            get { return totalDots; }
+            private set { totalDots = value; OnTotalDotsChanged(); }
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace SignalMan.SignalR
         public SignalRHelper()
         {
             Connected = false;
-            Steps = 0;
+            TotalDots = 0;
             Points = 0;
         }
 
@@ -80,8 +80,8 @@ namespace SignalMan.SignalR
         /// <param name="direction">Direction to move player.</param>
         public void MovePlayer(string direction)
         {
-            Steps++;
-            Points = Steps * 5;
+            TotalDots++;
+            Points = TotalDots * 5;
         }
         #endregion
 
@@ -99,13 +99,13 @@ namespace SignalMan.SignalR
             }
         }
 
-        public event EventHandler<int> StepsChanged;
-        protected void OnStepsChanged()
+        public event EventHandler<int> TotalDotsChanged;
+        protected void OnTotalDotsChanged()
         {
-            EventHandler<int> handler = StepsChanged;
+            EventHandler<int> handler = TotalDotsChanged;
             if (handler != null)
             {
-                handler(this, Steps);
+                handler(this, TotalDots);
             }
         }
 
