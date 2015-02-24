@@ -44,15 +44,24 @@
         };
 
         this.createSprite = function () {
-            var img = new Image();
-            img.src = 'tiles/' + sprites.pop() + '.png';
-            return img;
+            if (sprites && sprites.length) {
+                var img = new Image();
+                var index = parseInt(Math.random() * sprites.length);
+                var sprite = sprites[index];
+                sprites.splice(index, 1);
+
+                img.src = 'tiles/' + sprite + '.png';
+                return img;
+            }
         }
 
         this.sprite = this.createSprite();
 
         this.toDOM = function () {
-            return "<li><img width='20' src='" + this.sprite.src + "'/> " + this.name + ": " + this.cocos + "</li>";
+            if (this.sprite) {
+                return "<li><img width='20' src='" + this.sprite.src + "'/> " + this.name + ": " + this.cocos + "</li>";
+            }
+            return "";
         }
 
     };
@@ -75,7 +84,7 @@ var World = {
         player.position = rdm_pos;
         this.movePlayer(player.id, "");
     },
-    map:   [["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],
+    map: [["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],
             ["#", ".", ".", ".", ".", ".", ".", ".", ".", "#", ".", "#", ".", ".", ".", ".", ".", ".", "#", ".", ".", "#", ".", ".", ".", ".", ".", ".", "#"],
             ["#", ".", "#", "#", "#", "#", "#", ".", ".", ".", ".", "#", ".", ".", ".", ".", ".", ".", "#", ".", ".", "#", ".", "#", "#", "#", "#", "#", "#"],
             ["#", ".", "#", ".", ".", ".", ".", ".", ".", "#", ".", "#", ".", ".", ".", ".", ".", ".", "#", ".", ".", "#", ".", "#", ".", ".", ".", ".", "#"],
@@ -167,8 +176,14 @@ var World = {
 
         var list = $("#list");
         list.html("");
-        for (var key in this.players) {
-            var player = this.players[key];
+
+        var keys = Object.keys(this.players)
+        var that = this;
+        var points = keys.map(function (key) { return { key: key, cocos: that.players[key].cocos }; });
+        points.sort(function (a, b) { return b.cocos - a.cocos });
+
+        for (var p in points) {
+            var player = this.players[points[p].key];
             console.log(player);
             context.drawImage(player.sprite, player.getX() * TAM_TILE, player.getY() * TAM_TILE, TAM_TILE, TAM_TILE);
             list.append(player.toDOM());
