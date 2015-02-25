@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalMan.App.Windows", "Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalMan.App.WindowsPhone", "SignalMan.App\SignalMan.App.WindowsPhone\SignalMan.App.WindowsPhone.csproj", "{9F1AAAF3-5F4F-42B3-9233-6E6234376A7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalMan.SignalR", "SignalMan.SignalR\SignalMan.SignalR.csproj", "{438476E6-3450-45E9-813A-BE996F84B6D9}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SignalMan.App\SignalMan.App.Shared\SignalMan.App.Shared.projitems*{9f1aaaf3-5f4f-42b3-9233-6e6234376a7f}*SharedItemsImports = 4
@@ -86,16 +84,6 @@ Global
 		{9F1AAAF3-5F4F-42B3-9233-6E6234376A7F}.Release|x86.ActiveCfg = Release|x86
 		{9F1AAAF3-5F4F-42B3-9233-6E6234376A7F}.Release|x86.Build.0 = Release|x86
 		{9F1AAAF3-5F4F-42B3-9233-6E6234376A7F}.Release|x86.Deploy.0 = Release|x86
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Release|ARM.ActiveCfg = Release|Any CPU
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Release|x64.ActiveCfg = Release|Any CPU
-		{438476E6-3450-45E9-813A-BE996F84B6D9}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

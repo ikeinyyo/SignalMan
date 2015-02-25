@@ -1,6 +1,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using SignalMan.SignalR;
+using SignalMan.App.SignalR;
 using System;
 using Windows.UI.Popups;
 
