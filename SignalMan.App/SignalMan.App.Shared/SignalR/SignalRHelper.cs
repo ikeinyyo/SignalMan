@@ -6,6 +6,11 @@ namespace SignalMan.App.SignalR
 {
     public class SignalRHelper
     {
+
+        #region Fields
+        private string connectionId;
+        private string gameTag;
+        #endregion
         #region Properties
         /// <summary>
         /// Status of connection to server 
@@ -42,6 +47,8 @@ namespace SignalMan.App.SignalR
             Connected = false;
             TotalDots = 0;
             Points = 0;
+            connectionId = string.Empty;
+            gameTag = string.Empty;
         }
 
         #region Initialize Methods
@@ -49,9 +56,10 @@ namespace SignalMan.App.SignalR
         /// Initialize the SignalR Helper. Need connectionId.
         /// </summary>
         /// <param name="connectionId">SignalR server Id</param>
-        public void Initialize(string connectionId)
+        public void Initialize(string connectionId, string gameTag)
         {
-
+            this.connectionId = connectionId;
+            this.gameTag = gameTag;
         }
 
         /// <summary>
