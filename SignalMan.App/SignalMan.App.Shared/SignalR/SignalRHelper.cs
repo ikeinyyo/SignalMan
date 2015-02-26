@@ -12,8 +12,6 @@ namespace SignalMan.App.SignalR
         #region Fields
         private string connectionId;
         private string gameTag;
-        IHubProxy hubManProxy;
-        HubConnection hubConnection;
         #endregion
         #region Properties
         private bool connected;
@@ -73,8 +71,6 @@ namespace SignalMan.App.SignalR
         public async void Dispose()
         {
             Connected = false;
-            await hubManProxy.Invoke("LeaveGame");
-            hubConnection.Stop();
         }
         #endregion
 
@@ -82,34 +78,9 @@ namespace SignalMan.App.SignalR
         /// <summary>
         /// Connect to SignalR server. It need a valid ConnectionId.
         /// </summary>
-        public async void Connect()
+        public void Connect()
         {
-            try
-            {
-                hubConnection = new HubConnection("http://signalman.azurewebsites.net");
-                //hubConnection = new HubConnection("http://localhost:23555/");
-
-                hubManProxy = hubConnection.CreateHubProxy("HubMan");
-
-                hubManProxy.On<int>("updateRemainingDots", updateRemainingDotsAction);
-                hubManProxy.On<int>("updateDots", updateDotsAction);
-
-                #if WINDOWS_PHONE_APP
-                                // Doesn't work (just?) in emulator with default
-                                await hubConnection.Start(new LongPollingTransport());
-                #else
-                             await hubConnection.Start();
-                #endif
-
-                //await hubConnection.Start();
-                await hubManProxy.Invoke("JoinGame", connectionId, gameTag);
-                Connected = true;
-            }
-            catch(Exception ex)
-            {
-                Connected = false;
-                throw ex;
-            }
+            Connected = true;
         }
 
         /// <summary>
@@ -118,10 +89,6 @@ namespace SignalMan.App.SignalR
         /// <param name="direction">Direction to move player.</param>
         public void MovePlayer(string direction)
         {
-           if(Connected)
-           {
-               hubManProxy.Invoke("MovePlayer", direction);
-           }
         }
         #endregion
 
@@ -158,16 +125,6 @@ namespace SignalMan.App.SignalR
             {
                 handler(this, Connected);
             }
-        }
-
-        private void updateRemainingDotsAction(int remaining)
-        {
-            TotalDots = remaining;
-        }
-
-        private void updateDotsAction(int dots)
-        {
-            Points = dots;
         }
         #endregion
 
