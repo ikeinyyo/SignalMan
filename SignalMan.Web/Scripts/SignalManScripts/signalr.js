@@ -14,12 +14,14 @@
     hub_man_proxy.client.addPlayer = function (id, name) {
         // Add Player to Game
         World.addPlayer(id, name);
+        World.draw();
     };
 
     // Create a function that the hub can call back to remove Player.
     hub_man_proxy.client.removePlayer = function (id) {
         // Add Player to Game
         World.removePlayer(id);
+        World.draw();
     };
 
 
@@ -28,7 +30,8 @@
         // Invoke movePlayer with User info.
         World.movePlayer( id, direction );
         hub_man_proxy.server.updateRemainingDots( World.getRemaining() );
-        hub_man_proxy.server.updateDots( World.getPlayer(id).getCocos() );
+        hub_man_proxy.server.updateDots(World.getPlayer(id).getCocos());
+        World.draw();
     };
 
 
