@@ -86,8 +86,8 @@ namespace SignalMan.App.SignalR
         {
             try
             {
-                // var hubConnection = new HubConnection("http://signalman.azurewebsites.net");
-                hubConnection = new HubConnection("http://localhost:23555/");
+                hubConnection = new HubConnection("http://signalman.azurewebsites.net");
+                //hubConnection = new HubConnection("http://localhost:23555/");
 
                 hubManProxy = hubConnection.CreateHubProxy("HubMan");
 
