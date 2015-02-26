@@ -14,10 +14,11 @@ namespace SignalMan.App.SignalR
         IHubProxy hubManProxy;
         #endregion
         #region Properties
+        private bool connected;
         /// <summary>
         /// Status of connection to server 
         /// </summary>
-        public bool Connected { get; private set; }
+        public bool Connected { get { return connected; } private set { connected = value; OnConnectedChanged(); } }
         /// <summary>
         /// Steps in game.
         /// </summary>
@@ -81,13 +82,13 @@ namespace SignalMan.App.SignalR
         {
             try
             {
-                //var hubConnection = new HubConnection("http://signalrchatexample.azurewebsites.net/signalr");
+                //var hubConnection = new HubConnection("http://signalman.azurewebsites.net/signalr");
                 var hubConnection = new HubConnection("http://localhost:23555/");
 
                 hubManProxy = hubConnection.CreateHubProxy("HubMan");
 
-                hubManProxy.On<int>("UpdateRemainingDots", updateRemainingDotsAction);
-                hubManProxy.On<int>("UpdateDots", updateDotsAction);
+                hubManProxy.On<int>("updateRemainingDots", updateRemainingDotsAction);
+                hubManProxy.On<int>("updateDots", updateDotsAction);
 
                 await hubConnection.Start();
                 await hubManProxy.Invoke("JoinGame", connectionId, gameTag);
@@ -134,6 +135,17 @@ namespace SignalMan.App.SignalR
             if (handler != null)
             {
                 handler(this, TotalDots);
+            }
+        }
+
+
+        public event EventHandler<bool> ConnectedChanged;
+        protected void OnConnectedChanged()
+        {
+            EventHandler<bool> handler = ConnectedChanged;
+            if (handler != null)
+            {
+                handler(this, Connected);
             }
         }
 

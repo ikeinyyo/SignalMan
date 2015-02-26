@@ -109,8 +109,13 @@ namespace SignalMan.Web.Hubs
         public void UpdateRemainingDots(int remaining)
         {
             // Get gameId
+            var game = games.Where(g => g.Value.Equals(Context.ConnectionId)).FirstOrDefault();
+
             string gameId = string.Empty;
-            games.TryGetValue(Context.ConnectionId, out gameId);
+            if (!game.Equals(default(KeyValuePair<string, string>)))
+            {
+                gameId = game.Key;
+            }
 
             // If exists gameId, send the remaining dots to other clients in group
             if(!string.IsNullOrEmpty(gameId))
@@ -119,7 +124,7 @@ namespace SignalMan.Web.Hubs
             }
         }
 
-        public void UpdateDots(int dots, string userId)
+        public void UpdateDots( string userId, int dots)
         {
             // If exists userId, send dots to client
             if (!string.IsNullOrEmpty(userId))

@@ -2,6 +2,8 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using SignalMan.App.SignalR;
 using System;
+using System.Threading.Tasks;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 
 namespace SignalMan.App.ViewModel
@@ -16,6 +18,7 @@ namespace SignalMan.App.ViewModel
 
         #region Fields
         private SignalRHelper signalRHelper;
+        private readonly CoreDispatcher dispatcher;
         #endregion
 
         #region Properties
@@ -94,6 +97,7 @@ namespace SignalMan.App.ViewModel
             TotalDots = 0;
             signalRHelper = new SignalRHelper();
             Connected = false;
+            dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
         #endregion
 
@@ -112,6 +116,8 @@ namespace SignalMan.App.ViewModel
                 signalRHelper.Connect();
                 signalRHelper.PointsChanged += OnPointsChanged;
                 signalRHelper.TotalDotsChanged += OnTotalDotsChanged;
+                signalRHelper.ConnectedChanged += OnConnectedChanged;
+
                 Connected = signalRHelper.Connected;
             }
             catch
@@ -133,6 +139,8 @@ namespace SignalMan.App.ViewModel
             {
                 signalRHelper.PointsChanged -= OnPointsChanged;
                 signalRHelper.TotalDotsChanged -= OnTotalDotsChanged;
+                signalRHelper.ConnectedChanged -= OnConnectedChanged;
+
                 signalRHelper.Dispose();
                 Connected = signalRHelper.Connected;
             }
@@ -161,12 +169,18 @@ namespace SignalMan.App.ViewModel
         #region Update Properties
         private void OnPointsChanged(object sender, int e)
         {
-            Points = e;
+            dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { Points = e; });
+           // runAsync(() => { Points = e; });
         }
 
         private void OnTotalDotsChanged(object sender, int e)
         {
-            TotalDots = e;
+            runAsync(() => {TotalDots = e;});
+        }
+
+        private void OnConnectedChanged(object sender, bool e)
+        {
+            runAsync(() => { Connected = e; });
         }
         #endregion
 
@@ -187,6 +201,11 @@ namespace SignalMan.App.ViewModel
             MessageDialog errorDialog = new MessageDialog(errorMessage);
             errorDialog.Title = errorTitle;
             var taks = errorDialog.ShowAsync();
+        }
+
+        private void runAsync(DispatchedHandler action)
+        {
+            var task = dispatcher.RunAsync(CoreDispatcherPriority.Normal, action);
         }
         #endregion
 
