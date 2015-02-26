@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.SignalR.Client;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,6 +11,7 @@ namespace SignalMan.App.SignalR
         #region Fields
         private string connectionId;
         private string gameTag;
+        IHubProxy hubManProxy;
         #endregion
         #region Properties
         /// <summary>
@@ -75,9 +77,27 @@ namespace SignalMan.App.SignalR
         /// <summary>
         /// Connect to SignalR server. It need a valid ConnectionId.
         /// </summary>
-        public void Connect()
+        public async void Connect()
         {
-            Connected = true;
+            try
+            {
+                //var hubConnection = new HubConnection("http://signalrchatexample.azurewebsites.net/signalr");
+                var hubConnection = new HubConnection("http://localhost:23555/");
+
+                hubManProxy = hubConnection.CreateHubProxy("HubMan");
+
+                hubManProxy.On<int>("UpdateRemainingDots", updateRemainingDotsAction);
+                hubManProxy.On<int>("UpdateDots", updateDotsAction);
+
+                await hubConnection.Start();
+                await hubManProxy.Invoke("JoinGame", connectionId, gameTag);
+                Connected = true;
+            }
+            catch(Exception ex)
+            {
+                Connected = false;
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -86,8 +106,10 @@ namespace SignalMan.App.SignalR
         /// <param name="direction">Direction to move player.</param>
         public void MovePlayer(string direction)
         {
-            TotalDots++;
-            Points = TotalDots * 5;
+           if(Connected)
+           {
+               hubManProxy.Invoke("MovePlayer", direction);
+           }
         }
         #endregion
 
@@ -115,6 +137,15 @@ namespace SignalMan.App.SignalR
             }
         }
 
+        private void updateRemainingDotsAction(int remaining)
+        {
+            TotalDots = remaining;
+        }
+
+        private void updateDotsAction(int dots)
+        {
+            Points = dots;
+        }
         #endregion
 
     }
