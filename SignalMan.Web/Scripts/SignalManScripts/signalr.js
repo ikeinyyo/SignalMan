@@ -10,13 +10,25 @@
         console.log("Started connection with id " + id);
     };
 
+    // Create a function that the hub can call back to add Player.
+    hub_man_proxy.client.addPlayer = function (id, name) {
+        // Add Player to Game
+        World.addPlayer(id, name);
+    };
+
+    // Create a function that the hub can call back to remove Player.
+    hub_man_proxy.client.removePlayer = function (id) {
+        // Add Player to Game
+        World.removePlayer(id);
+    };
+
 
     // Create a function that the hub can call back to move player.
     hub_man_proxy.client.movePlayer = function (id, direction) {
         // Invoke movePlayer with User info.
         World.movePlayer( id, direction );
-        hub_man_proxy.server.updateRemainingDots(World.remaining);
-        hub_man_proxy.server.updateDots(World.players[id].cocos);
+        hub_man_proxy.server.updateRemainingDots( World.getRemaining() );
+        hub_man_proxy.server.updateDots( World.getPlayer(id).getCocos() );
     };
 
 

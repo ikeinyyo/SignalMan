@@ -32,8 +32,12 @@ var Player = (function () {
             return next_pos;
         };
 
-        this.getCoco = function () {
+        this.catchCoco = function () {
             return ++this.cocos;
+        };
+
+        this.getCocos = function () {
+            return this.cocos;
         };
 
         this.getX = function () {
@@ -73,8 +77,8 @@ var Player = (function () {
 var World = {
     remaining: 0,
     players: [],
-    addPlayer: function (player) {
-        this.players[player.id] = player;
+    addPlayer: function (id, name) {
+        player = new Player(id, name);
 
         var rdm_pos;
         do {
@@ -83,7 +87,18 @@ var World = {
 
         player.position = rdm_pos;
         player.cocos = 0;
-        this.movePlayer(player.id, "");
+
+        this.players[id] = player;
+        this.movePlayer(id, "");
+    },
+    removePlayer: function(id_player){
+        delete this.players[id]
+    },
+    getPlayer: function (id) {
+        return this.players[id];
+    },
+    getRemaining: function (id) {
+        return this.remaining;
     },
     map: [],
     sprites: {},
@@ -96,8 +111,8 @@ var World = {
     read: function (position) {
         return this.map[position.y][position.x];
     },
-    getCoco: function () {
-        this.current_player.getCoco();
+    catchCoco: function () {
+        this.current_player.catchCoco();
         return --this.remaining;
     },
     movePlayer: function (id_player, direction) {
@@ -108,7 +123,7 @@ var World = {
             case "#":
                 return false;
             case ".":
-                this.getCoco();
+                this.catchCoco();
             case " ":
                 this.move(position);
                 return true;
