@@ -2,11 +2,6 @@
 
 var Player = (function () {
     
-
-    var gameId = parseInt(Math.random() * 10000);
-    var gameIdSpan = document.getElementById("gameId");
-    gameIdSpan.innerHTML = gameId;
-
     var Player = function (id, name) {
         this.id = id;
         this.name = name;
@@ -207,8 +202,8 @@ var World = {
             ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"]],
         this.remaining = 339
 
-        this.addPlayer(new Player("a", "alex"));
-        this.addPlayer(new Player("g", "gallardo"));
+        //this.addPlayer(new Player("a", "alex"));
+        //this.addPlayer(new Player("g", "gallardo"));
 
         for (var key in this.players) {
             this.addPlayer(this.players[key]);
