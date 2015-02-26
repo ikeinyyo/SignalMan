@@ -1,12 +1,5 @@
 ﻿var sprites = ["man1", "man2", "man3", "man4", "man5", "man6", "man7", "man8", "man9", "man10", "man11", "man12", "man13", "man14", "man15", "man16"];
 
-(function preloadSprites() {
-    $(sprites.concat(["dot", "empty", "wall"])).each(function () {
-        $('body').append( $('<img hidden />')[0].src = "/tiles/" + this + ".png");
-    });
-})();
-
-
 var Player = (function () {
     
     var Player = function (id, name) {
@@ -120,7 +113,6 @@ var World = {
     },
     catchCoco: function () {
         this.current_player.catchCoco();
-        return --this.remaining;
     },
     movePlayer: function (id_player, direction) {
         this.current_player = this.players[id_player];
@@ -192,7 +184,13 @@ var World = {
             list.append(player.toDOM());
         };
 
-        $("#dots").html(this.remaining);
+        var remaining = 0;
+        for (var i in this.map)
+            for (var j in this.map[i])
+                if (this.map[i][j] === ".")
+                    remaining++;
+        this.remaining = remaining;
+        $("#dots").html(remaining);
 
     },
     init: function () {
@@ -219,11 +217,12 @@ var World = {
             ["#", ".", "#", "#", "#", "#", "#", "#", ".", "#", ".", "#", "#", "#", "#", "#", ".", ".", ".", ".", ".", ".", ".", "#", ".", "#", ".", ".", "#"],
             ["#", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "#"],
             ["#", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "#"],
-            ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"]],
-        this.remaining = 339
+            ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"]];
 
-        for (var key in this.players) {
-            this.addPlayer(this.players[key]);
+        for (var id in this.players) {
+            var name = this.players[id].name;
+            delete this.players[id];
+            this.addPlayer(id,name);
         };
         this.draw();
     }
