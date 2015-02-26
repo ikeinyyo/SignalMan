@@ -14,6 +14,8 @@
     hub_man_proxy.client.addPlayer = function (id, name) {
         // Add Player to Game
         World.addPlayer(id, name);
+        hub_man_proxy.server.updateRemainingDots(World.getRemaining());
+        hub_man_proxy.server.updateDots(id, World.getPlayer(id).getCocos());
         World.draw();
     };
 
@@ -30,7 +32,7 @@
         // Invoke movePlayer with User info.
         World.movePlayer( id, direction );
         hub_man_proxy.server.updateRemainingDots( World.getRemaining() );
-        hub_man_proxy.server.updateDots( id, World.getPlayer(id).getCocos() );
+        hub_man_proxy.server.updateDots( id, World.getPlayer(id).getCocos());
         World.draw();
     };
 

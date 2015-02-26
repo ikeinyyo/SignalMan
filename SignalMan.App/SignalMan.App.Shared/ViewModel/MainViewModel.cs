@@ -117,8 +117,6 @@ namespace SignalMan.App.ViewModel
                 signalRHelper.PointsChanged += OnPointsChanged;
                 signalRHelper.TotalDotsChanged += OnTotalDotsChanged;
                 signalRHelper.ConnectedChanged += OnConnectedChanged;
-
-                Connected = signalRHelper.Connected;
             }
             catch
             {
@@ -137,12 +135,10 @@ namespace SignalMan.App.ViewModel
             App.Current.Suspending -= OnAppSuspending;
             if (signalRHelper.Connected)
             {
+                signalRHelper.Dispose();
                 signalRHelper.PointsChanged -= OnPointsChanged;
                 signalRHelper.TotalDotsChanged -= OnTotalDotsChanged;
                 signalRHelper.ConnectedChanged -= OnConnectedChanged;
-
-                signalRHelper.Dispose();
-                Connected = signalRHelper.Connected;
             }
         }
 
@@ -169,8 +165,7 @@ namespace SignalMan.App.ViewModel
         #region Update Properties
         private void OnPointsChanged(object sender, int e)
         {
-            dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { Points = e; });
-           // runAsync(() => { Points = e; });
+            runAsync(() => { Points = e; });
         }
 
         private void OnTotalDotsChanged(object sender, int e)

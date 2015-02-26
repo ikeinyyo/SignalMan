@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using Microsoft.AspNet.SignalR.Client.Transports;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,7 @@ namespace SignalMan.App.SignalR
         private string connectionId;
         private string gameTag;
         IHubProxy hubManProxy;
+        HubConnection hubConnection;
         #endregion
         #region Properties
         private bool connected;
@@ -68,9 +70,11 @@ namespace SignalMan.App.SignalR
         /// <summary>
         /// Close and dispose the SignalR server connection 
         /// </summary>
-        public void Dispose()
+        public async void Dispose()
         {
             Connected = false;
+            await hubManProxy.Invoke("LeaveGame");
+            hubConnection.Stop();
         }
         #endregion
 
@@ -82,15 +86,22 @@ namespace SignalMan.App.SignalR
         {
             try
             {
-                //var hubConnection = new HubConnection("http://signalman.azurewebsites.net/signalr");
-                var hubConnection = new HubConnection("http://localhost:23555/");
+                // var hubConnection = new HubConnection("http://signalman.azurewebsites.net");
+                hubConnection = new HubConnection("http://localhost:23555/");
 
                 hubManProxy = hubConnection.CreateHubProxy("HubMan");
 
                 hubManProxy.On<int>("updateRemainingDots", updateRemainingDotsAction);
                 hubManProxy.On<int>("updateDots", updateDotsAction);
 
-                await hubConnection.Start();
+                #if WINDOWS_PHONE_APP
+                                // Doesn't work (just?) in emulator with default
+                                await hubConnection.Start(new LongPollingTransport());
+                #else
+                             await hubConnection.Start();
+                #endif
+
+                //await hubConnection.Start();
                 await hubManProxy.Invoke("JoinGame", connectionId, gameTag);
                 Connected = true;
             }

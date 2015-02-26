@@ -91,8 +91,8 @@ var World = {
         this.players[id] = player;
         this.movePlayer(id, "");
     },
-    removePlayer: function(id_player){
-        delete this.players[id]
+    removePlayer: function (id_player) {
+        delete this.players[id_player]
     },
     getPlayer: function (id) {
         return this.players[id];
