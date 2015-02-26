@@ -113,10 +113,10 @@ namespace SignalMan.App.ViewModel
             {
                 // Connect
                 signalRHelper.Initialize(ConnectionId, GameTag);
-                signalRHelper.Connect();
                 signalRHelper.PointsChanged += OnPointsChanged;
                 signalRHelper.TotalDotsChanged += OnTotalDotsChanged;
                 signalRHelper.ConnectedChanged += OnConnectedChanged;
+                signalRHelper.Connect();
             }
             catch
             {
