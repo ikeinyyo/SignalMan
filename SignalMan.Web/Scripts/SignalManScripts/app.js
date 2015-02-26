@@ -1,5 +1,12 @@
 ﻿var sprites = ["man1", "man2", "man3", "man4", "man5", "man6", "man7", "man8", "man9", "man10", "man11", "man12", "man13", "man14", "man15", "man16"];
 
+(function preloadSprites() {
+    $(sprites.concat(["dot", "empty", "wall"])).each(function () {
+        $('body').append( $('<img hidden />')[0].src = "/tiles/" + this + ".png");
+    });
+})();
+
+
 var Player = (function () {
     
     var Player = function (id, name) {
@@ -134,9 +141,7 @@ var World = {
     },
     move: function (position) {
         this.map[this.current_player.position.y][this.current_player.position.x] = " ";
-        //this.map[position.y][position.x] = this.current_player.id;
         this.current_player.position = position;
-
     },
     draw: function () {
         var TAM_TILE = 32;
@@ -217,47 +222,12 @@ var World = {
             ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"]],
         this.remaining = 339
 
-        //this.addPlayer(new Player("a", "alex"));
-        //this.addPlayer(new Player("g", "gallardo"));
-
         for (var key in this.players) {
             this.addPlayer(this.players[key]);
         };
-
-        setTimeout(function () { this.draw() }.bind(this), 500);
-
+        this.draw();
     }
 };
-
-$(document).keypress(function (e) {
-    switch (e.which) {
-        case 106:
-            World.movePlayer("a", "left");
-            break;
-        case 97:
-            World.movePlayer("g", "left");
-            break;
-        case 105:
-            World.movePlayer("a", "up");
-            break;
-        case 119:
-            World.movePlayer("g", "up");
-            break;
-        case 108:
-            World.movePlayer("a", "right");
-            break;
-        case 100:
-            World.movePlayer("g", "right");
-            break;
-        case 107:
-            World.movePlayer("a", "down");
-            break;
-        case 115:
-            World.movePlayer("g", "down");
-            break;
-    }
-    World.draw();
-});
 
 $("#reset").click(function () { World.init(); });
 World.init();

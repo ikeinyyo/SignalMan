@@ -30,7 +30,7 @@
         // Invoke movePlayer with User info.
         World.movePlayer( id, direction );
         hub_man_proxy.server.updateRemainingDots( World.getRemaining() );
-        hub_man_proxy.server.updateDots(World.getPlayer(id).getCocos());
+        hub_man_proxy.server.updateDots( id, World.getPlayer(id).getCocos() );
         World.draw();
     };
 
